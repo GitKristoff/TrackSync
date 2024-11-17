@@ -1,100 +1,152 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+
+<div class="flex h-screen bg-gray-100 sticky top-0">
+
+    <!-- Toggle Button -->
+    <button id="toggle-sidebar-btn" class="absolute top-4 left-64 p-2 bg-gray-200 rounded-md shadow-md z-50 hover:bg-gray-300 focus:outline-none transition-all duration-300 ease-in-out">
+        <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+    
+    <!-- Sidebar -->
+    <aside id="sidebar"
+    class="absolute top-0 left-0 bg-white h-screen w-64 shadow-md flex flex-col transform translate-x-0 transition-transform duration-300 ease-in-out">
+
+        <div class="flex items-center justify-start p-6 h-16 border-b bg-slate-500">
+            <a href="{{ route('dashboard') }}">
+                <img src="{{ asset('images/tracksync-templogo.png') }}" 
+                     alt="TrackSync Logo" 
+                     class="w-10 shadow-sm rounded-full border-stone-500">
+            </a>
+            <h2 class="p-3 text-white text-xl font-bold">TrackSync</h2>
+        </div>
+        <nav class="mt-4 flex-1 overflow-y-auto">
+            <ul class="space-y-2">
+                <li>
+                    <a href="{{ route('dashboard') }}" 
+                       class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" 
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  d="M3 10h18M9 21H5a2 2 0 01-2-2v-4h6v6z" />
+                        </svg>
+                        Dashboard
                     </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-            </div>
-
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
+                </li>
+                <li>
+                    <a href="{{ route('dashboard') }}" 
+                    class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M9 21H5a2 2 0 01-2-2v-4h6v6z" />
+                        </svg>
+                        Bus Status
+                    </a>
+                </li>
+                <!-- Profile Collapsible Menu -->
+                <li>
+                    <button 
+                        onclick="toggleMenu('profile-menu')" 
+                        class="flex items-center w-full px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Settings
+                        <svg id="profile-icon" class="w-4 h-4 ml-auto transition-transform transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <ul id="profile-menu" class="hidden ml-6 space-y-2">
+                        <li>
+                            <a href="{{ route('profile.edit') }}" 
+                            class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+                                Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('profile.edit') }}" 
+                            class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+                                Feedback
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('profile.edit') }}" 
+                            class="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900">
+                                Help & Support
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-gray-900 w-full text-left">
+                            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.403-2.807a1 1 0 00-.76-.48h-8.675M9 13v6m0 0v6m0-6h6m6-6h.33" />
+                            </svg>
+                            Logout
                         </button>
-                    </x-slot>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+</div>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+{{-- JavaScript Functions --}}
+<script>
+    // Collapsible menu for Settings
+        function toggleMenu(menuId) {
+        const menu = document.getElementById(menuId);
+        const icon = document.getElementById(`${menuId}-icon`);
 
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
+        // Toggle the visibility of the menu
+        if (menu.classList.contains('hidden')) {
+            menu.classList.remove('hidden');
+            menu.classList.add('block');
+            if (icon) icon.classList.add('rotate-180');
+        } else {
+            menu.classList.add('hidden');
+            menu.classList.remove('block');
+            if (icon) icon.classList.remove('rotate-180');
+        }
+    }
 
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
+    // Collapsible Menu
+    // document.getElementById('toggle-sidebar-btn').addEventListener('click', () => {
+    //     const sidebar = document.getElementById('sidebar');
+    //     const button = document.getElementById('toggle-sidebar-btn');
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div>
+    //     // Toggle the sidebar visibility
+    //     const isOpen = !sidebar.classList.contains('-translate-x-full');
+    //     sidebar.classList.toggle('-translate-x-full', isOpen);
+    //     sidebar.classList.toggle('translate-x-0', !isOpen);
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
+    //     // Adjust button position dynamically
+    //     button.style.transform = isOpen ? 'translateX(0)' : 'translateX(16rem)'; // 16rem matches sidebar width
+    // });
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
+    document.getElementById('toggle-sidebar-btn').addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('main-content');
+        const button = document.getElementById('toggle-sidebar-btn');
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
+        // Toggle sidebar visibility
+        const isOpen = !sidebar.classList.contains('-translate-x-full');
+        sidebar.classList.toggle('-translate-x-full', isOpen);
+        sidebar.classList.toggle('translate-x-0', !isOpen);
+
+        // Adjust main content margin
+        if (isOpen) {
+            content.classList.remove('ml-64');
+        } else {
+            content.classList.add('ml-64'); 
+        }
+
+       // Adjust button position dynamically
+       button.style.left = isOpen ? '-0.5rem' : '16rem';
+       
+    });
+
+</script>
